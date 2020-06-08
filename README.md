@@ -90,7 +90,7 @@ arnoldas@arnoldas:~/dev/metadata-bug-reproducer$ bin/console app:test2 -v
 null
 ```
 The only difference between these commands is that in `Test2Command`, `PersonInmateRepository` is being initialized 
-(constructed) which also creates metadata for `PersonInmate`.
+(constructed) which also loads metadata for `PersonInmate`.
 
 ## Library versions installed
 
