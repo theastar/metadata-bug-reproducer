@@ -19,20 +19,10 @@ bin/console app:test
 It produces the following output
 
 ```
-# bin/console app:test -vvv
-[info] User Deprecated: Auto-registration of the command "Doctrine\Bundle\MigrationsBundle\Command\MigrationsStatusDoctrineCommand" is deprecated since Symfony 3.4 and won't be supported in 4.0. Use PSR-4 based service discovery instead.
+arnoldas@arnoldas:~/dev/metadata-bug-reproducer$ bin/console app:test -vvv
+[info] User Deprecated: Creating Doctrine\ORM\Mapping\UnderscoreNamingStrategy without making it number aware is deprecated and will be removed in Doctrine ORM 3.0.
 
-[info] User Deprecated: Auto-registration of the command "Doctrine\Bundle\MigrationsBundle\Command\MigrationsGenerateDoctrineCommand" is deprecated since Symfony 3.4 and won't be supported in 4.0. Use PSR-4 based service discovery instead.
-
-[info] User Deprecated: Auto-registration of the command "Doctrine\Bundle\MigrationsBundle\Command\MigrationsExecuteDoctrineCommand" is deprecated since Symfony 3.4 and won't be supported in 4.0. Use PSR-4 based service discovery instead.
-
-[info] User Deprecated: Auto-registration of the command "Doctrine\Bundle\MigrationsBundle\Command\MigrationsMigrateDoctrineCommand" is deprecated since Symfony 3.4 and won't be supported in 4.0. Use PSR-4 based service discovery instead.
-
-[info] User Deprecated: Auto-registration of the command "Doctrine\Bundle\MigrationsBundle\Command\MigrationsDiffDoctrineCommand" is deprecated since Symfony 3.4 and won't be supported in 4.0. Use PSR-4 based service discovery instead.
-
-[info] User Deprecated: Auto-registration of the command "Doctrine\Bundle\MigrationsBundle\Command\MigrationsLatestDoctrineCommand" is deprecated since Symfony 3.4 and won't be supported in 4.0. Use PSR-4 based service discovery instead.
-
-[info] User Deprecated: Auto-registration of the command "Doctrine\Bundle\MigrationsBundle\Command\MigrationsVersionDoctrineCommand" is deprecated since Symfony 3.4 and won't be supported in 4.0. Use PSR-4 based service discovery instead.
+[debug] Notified event "console.command" to listener "Symfony\Component\HttpKernel\EventListener\DebugHandlersListener::configure".
 
 [debug] SELECT t0.id AS id_1, t0.person_id AS person_id_2 FROM criminal_record t0 WHERE t0.person_id = ? LIMIT 1
 
@@ -40,24 +30,28 @@ It produces the following output
 
 Notice: Object of class App\Entity\PersonInmate could not be converted to int"
 
+[debug] Notified event "console.error" to listener "Symfony\Component\Console\EventListener\ErrorListener::onConsoleError".
+
 [debug] Command "app:test -vvv" exited with code "1"
 
+[debug] Notified event "console.terminate" to listener "Symfony\Component\Console\EventListener\ErrorListener::onConsoleTerminate".
 
-In DBALException.php line 179:
-                                                                                                                       
-  [Doctrine\DBAL\DBALException]                                                                                        
-  An exception occurred while executing 'SELECT t0.id AS id_1, t0.person_id AS person_id_2 FROM criminal_record t0 WH  
-  ERE t0.person_id = ? LIMIT 1' with params [{}]:                                                                      
-                                                                                                                       
-  Notice: Object of class App\Entity\PersonInmate could not be converted to int                                        
-                                                                                                                       
+
+In DBALException.php line 172:
+                                                                                                                                        
+  [Doctrine\DBAL\DBALException]                                                                                                         
+  An exception occurred while executing 'SELECT t0.id AS id_1, t0.person_id AS person_id_2 FROM criminal_record t0 WHERE t0.person_id   
+  = ? LIMIT 1' with params [{}]:                                                                                                        
+                                                                                                                                        
+  Notice: Object of class App\Entity\PersonInmate could not be converted to int                                                         
+                                                                                                                                        
 
 Exception trace:
-  at /home/arnoldas/dev/metadata-bug-reproducer/vendor/doctrine/dbal/lib/Doctrine/DBAL/DBALException.php:179
- Doctrine\DBAL\DBALException::wrapException() at /home/arnoldas/dev/metadata-bug-reproducer/vendor/doctrine/dbal/lib/Doctrine/DBAL/DBALException.php:150
- Doctrine\DBAL\DBALException::driverExceptionDuringQuery() at /home/arnoldas/dev/metadata-bug-reproducer/vendor/doctrine/dbal/lib/Doctrine/DBAL/Connection.php:915
- Doctrine\DBAL\Connection->executeQuery() at /home/arnoldas/dev/metadata-bug-reproducer/vendor/doctrine/orm/lib/Doctrine/ORM/Persisters/Entity/BasicEntityPersister.php:712
- Doctrine\ORM\Persisters\Entity\BasicEntityPersister->load() at /home/arnoldas/dev/metadata-bug-reproducer/vendor/doctrine/orm/lib/Doctrine/ORM/EntityRepository.php:196
+  at /home/arnoldas/dev/metadata-bug-reproducer/vendor/doctrine/dbal/lib/Doctrine/DBAL/DBALException.php:172
+ Doctrine\DBAL\DBALException::wrapException() at /home/arnoldas/dev/metadata-bug-reproducer/vendor/doctrine/dbal/lib/Doctrine/DBAL/DBALException.php:149
+ Doctrine\DBAL\DBALException::driverExceptionDuringQuery() at /home/arnoldas/dev/metadata-bug-reproducer/vendor/doctrine/dbal/lib/Doctrine/DBAL/Connection.php:914
+ Doctrine\DBAL\Connection->executeQuery() at /home/arnoldas/dev/metadata-bug-reproducer/vendor/doctrine/orm/lib/Doctrine/ORM/Persisters/Entity/BasicEntityPersister.php:717
+ Doctrine\ORM\Persisters\Entity\BasicEntityPersister->load() at /home/arnoldas/dev/metadata-bug-reproducer/vendor/doctrine/orm/lib/Doctrine/ORM/EntityRepository.php:193
  Doctrine\ORM\EntityRepository->findOneBy() at /home/arnoldas/dev/metadata-bug-reproducer/src/Repository/CriminalRecordRepository.php:19
  App\Repository\CriminalRecordRepository->findOneByPerson() at /home/arnoldas/dev/metadata-bug-reproducer/src/Command/TestCommand.php:26
  App\Command\TestCommand->execute() at /home/arnoldas/dev/metadata-bug-reproducer/vendor/symfony/console/Command/Command.php:255
@@ -68,17 +62,17 @@ Exception trace:
  Symfony\Bundle\FrameworkBundle\Console\Application->doRun() at /home/arnoldas/dev/metadata-bug-reproducer/vendor/symfony/console/Application.php:148
  Symfony\Component\Console\Application->run() at /home/arnoldas/dev/metadata-bug-reproducer/bin/console:42
 
-In PDOStatement.php line 105:
+In PDOStatement.php line 127:
                                                                                  
   [Symfony\Component\Debug\Exception\ContextErrorException]                      
   Notice: Object of class App\Entity\PersonInmate could not be converted to int  
                                                                                  
 
 Exception trace:
-  at /home/arnoldas/dev/metadata-bug-reproducer/vendor/doctrine/dbal/lib/Doctrine/DBAL/Driver/PDOStatement.php:105
- Doctrine\DBAL\Driver\PDOStatement->execute() at /home/arnoldas/dev/metadata-bug-reproducer/vendor/doctrine/dbal/lib/Doctrine/DBAL/Connection.php:907
- Doctrine\DBAL\Connection->executeQuery() at /home/arnoldas/dev/metadata-bug-reproducer/vendor/doctrine/orm/lib/Doctrine/ORM/Persisters/Entity/BasicEntityPersister.php:712
- Doctrine\ORM\Persisters\Entity\BasicEntityPersister->load() at /home/arnoldas/dev/metadata-bug-reproducer/vendor/doctrine/orm/lib/Doctrine/ORM/EntityRepository.php:196
+  at /home/arnoldas/dev/metadata-bug-reproducer/vendor/doctrine/dbal/lib/Doctrine/DBAL/Driver/PDOStatement.php:127
+ Doctrine\DBAL\Driver\PDOStatement->execute() at /home/arnoldas/dev/metadata-bug-reproducer/vendor/doctrine/dbal/lib/Doctrine/DBAL/Connection.php:906
+ Doctrine\DBAL\Connection->executeQuery() at /home/arnoldas/dev/metadata-bug-reproducer/vendor/doctrine/orm/lib/Doctrine/ORM/Persisters/Entity/BasicEntityPersister.php:717
+ Doctrine\ORM\Persisters\Entity\BasicEntityPersister->load() at /home/arnoldas/dev/metadata-bug-reproducer/vendor/doctrine/orm/lib/Doctrine/ORM/EntityRepository.php:193
  Doctrine\ORM\EntityRepository->findOneBy() at /home/arnoldas/dev/metadata-bug-reproducer/src/Repository/CriminalRecordRepository.php:19
  App\Repository\CriminalRecordRepository->findOneByPerson() at /home/arnoldas/dev/metadata-bug-reproducer/src/Command/TestCommand.php:26
  App\Command\TestCommand->execute() at /home/arnoldas/dev/metadata-bug-reproducer/vendor/symfony/console/Command/Command.php:255
@@ -90,7 +84,6 @@ Exception trace:
  Symfony\Component\Console\Application->run() at /home/arnoldas/dev/metadata-bug-reproducer/bin/console:42
 
 app:test [-h|--help] [-q|--quiet] [-v|vv|vvv|--verbose] [-V|--version] [--ansi] [--no-ansi] [-n|--no-interaction] [-e|--env ENV] [--no-debug] [--] <command>
-
 
 ```
 
@@ -110,16 +103,19 @@ Output from `composer show `
 doctrine/annotations                1.10.3  Docblock Annotations Parser
 doctrine/cache                      1.10.1  PHP Doctrine Cache library is a popular cache implementation that supports many differen...
 doctrine/collections                1.6.5   PHP Doctrine Collections library that adds additional functionality on top of PHP arrays.
-doctrine/common                     v2.8.1  Common Library for Doctrine projects
-doctrine/dbal                       v2.6.3  Database Abstraction Layer
-doctrine/doctrine-bundle            1.10.3  Symfony DoctrineBundle
+doctrine/common                     2.13.3  PHP Doctrine Common project is a library that provides additional functionality that oth...
+doctrine/dbal                       2.10.2  Powerful PHP database abstraction layer (DBAL) with many features for database schema in...
+doctrine/doctrine-bundle            1.12.10 Symfony DoctrineBundle
 doctrine/doctrine-cache-bundle      1.4.0   Symfony Bundle for Doctrine Cache
-doctrine/doctrine-migrations-bundle 1.1.1   Symfony DoctrineMigrationsBundle
+doctrine/doctrine-migrations-bundle 2.1.2   Symfony DoctrineMigrationsBundle
+doctrine/event-manager              1.1.0   The Doctrine Event Manager is a simple PHP event system that was built to be used with t...
 doctrine/inflector                  1.4.3   PHP Doctrine Inflector is a small library that can perform string manipulations with reg...
 doctrine/instantiator               1.3.1   A small, lightweight utility to instantiate objects in PHP without invoking their constr...
 doctrine/lexer                      1.2.1   PHP Doctrine Lexer parser library that can be used in Top-Down, Recursive Descent Parsers.
-doctrine/migrations                 v1.8.1  Database Schema migrations using Doctrine DBAL
-doctrine/orm                        v2.5.14 Object-Relational-Mapper for PHP
+doctrine/migrations                 2.2.1   PHP Doctrine Migrations project offer additional functionality on top of the database ab...
+doctrine/orm                        v2.7.3  Object-Relational-Mapper for PHP
+doctrine/persistence                1.3.7   The Doctrine Persistence project is a set of shared interfaces and functionality that th...
+doctrine/reflection                 1.2.1   The Doctrine Reflection project is a simple library used by the various Doctrine project...
 jdorn/sql-formatter                 v1.2.17 a PHP SQL highlighting library
 ocramius/package-versions           1.4.2   Composer plugin that provides efficient querying for installed package versions (no runt...
 ocramius/proxy-manager              2.2.3   A library providing utilities to generate, instantiate and generally operate with Object...
@@ -145,6 +141,8 @@ symfony/http-kernel                 v3.4.41 Symfony HttpKernel Component
 symfony/polyfill-apcu               v1.17.0 Symfony polyfill backporting apcu_* functions to lower PHP versions
 symfony/polyfill-mbstring           v1.17.0 Symfony polyfill for the Mbstring extension
 symfony/routing                     v3.4.41 Symfony Routing Component
+symfony/service-contracts           v2.1.2  Generic abstractions related to writing services
+symfony/stopwatch                   v3.4.41 Symfony Stopwatch Component
 symfony/var-dumper                  v3.4.41 Symfony mechanism for exploring and dumping PHP variables
 symfony/yaml                        v3.4.41 Symfony Yaml Component
 zendframework/zend-code             3.4.1   Extensions to the PHP Reflection API, static code scanning, and code generation
