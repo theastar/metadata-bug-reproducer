@@ -194,6 +194,9 @@
     "symfony/service-contracts": {
         "version": "v2.1.2"
     },
+    "symfony/stopwatch": {
+        "version": "v3.4.41"
+    },
     "symfony/var-dumper": {
         "version": "v3.4.41"
     },
