@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+
+<container xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xmlns="http://symfony.com/schema/dic/services"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="app.repository.criminal_record"
+                 class="App\Repository\CriminalRecordRepository"
+                 lazy="true">
+            <factory service="doctrine.orm.default_entity_manager" method="getRepository"/>
+            <argument>App:CriminalRecord</argument>
+        </service>
+
+        <service id="app.command.test"
+                 class="App\Command\TestCommand">
+            <argument id="app.repository.criminal_record" type="service"/>
+            <tag name="console.command"/>
+        </service>
+    </services>
+</container>
