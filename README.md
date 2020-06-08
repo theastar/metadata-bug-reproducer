@@ -4,14 +4,13 @@ There is a mapped superclass entity `Person` and its derived entity `PersonInmat
 
 Calling `\Doctrine\ORM\EntityRepository::findOneBy` with `['person' => new PersonInmate()]` results in an exception.
 
-## Installation
+
+## Reproducing the issue
 
 ```
 composer install
 bin/console doctr:migrations:migrate
 ```
-
-## Reproducing the issue
 
 ```
 bin/console app:test
@@ -20,7 +19,7 @@ bin/console app:test
 It produces the following output
 
 ```
-arnoldas@arnoldas:~/dev/metadata-bug-reproducer$ bin/console app:test -vvv
+# bin/console app:test -vvv
 [info] User Deprecated: Auto-registration of the command "Doctrine\Bundle\MigrationsBundle\Command\MigrationsStatusDoctrineCommand" is deprecated since Symfony 3.4 and won't be supported in 4.0. Use PSR-4 based service discovery instead.
 
 [info] User Deprecated: Auto-registration of the command "Doctrine\Bundle\MigrationsBundle\Command\MigrationsGenerateDoctrineCommand" is deprecated since Symfony 3.4 and won't be supported in 4.0. Use PSR-4 based service discovery instead.
@@ -94,6 +93,15 @@ app:test [-h|--help] [-q|--quiet] [-v|vv|vvv|--verbose] [-V|--version] [--ansi] 
 
 
 ```
+
+## The reason
+
+In `\Doctrine\ORM\Persisters\Entity\BasicEntityPersister::getValues` there is no metadata for entity `PersonInmate`, 
+i.e., the call to `\Doctrine\Common\Persistence\Mapping\ClassMetadataFactory::hasMetadataFor` returns false. Then the
+result from `\Doctrine\ORM\Persisters\Entity\BasicEntityPersister::getIndividualValue` is the object itself which later 
+cast to an int.
+
+See ![here](breakpoint-with-context.png)
 
 ## Library versions installed
 
