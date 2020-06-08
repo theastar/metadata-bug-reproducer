@@ -79,7 +79,7 @@ app:test [-h|--help] [-q|--quiet] [-v|vv|vvv|--verbose] [-V|--version] [--ansi] 
 
 In `\Doctrine\ORM\Persisters\Entity\BasicEntityPersister::getValues` when there is no metadata for entity `PersonInmate`, 
 i.e., the call to `\Doctrine\Common\Persistence\Mapping\ClassMetadataFactory::hasMetadataFor` returns false, the
-result from `\Doctrine\ORM\Persisters\Entity\BasicEntityPersister::getIndividualValue` is the object itself which later 
+result from `\Doctrine\ORM\Persisters\Entity\BasicEntityPersister::getIndividualValue` is the object itself which is later 
 cast to an int.
 
 See ![here](breakpoint-with-context.png)
