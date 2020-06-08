@@ -11,9 +11,23 @@
             <argument>App:CriminalRecord</argument>
         </service>
 
+        <service id="app.repository.person_inmate"
+                 class="App\Repository\PersonInmateRepository"
+                 lazy="true">
+            <factory service="doctrine.orm.default_entity_manager" method="getRepository"/>
+            <argument>App:PersonInmate</argument>
+        </service>
+
         <service id="app.command.test"
                  class="App\Command\TestCommand">
             <argument id="app.repository.criminal_record" type="service"/>
+            <tag name="console.command"/>
+        </service>
+
+        <service id="app.command.test2"
+                 class="App\Command\Test2Command">
+            <argument id="app.repository.criminal_record" type="service"/>
+            <argument id="app.repository.person_inmate" type="service"/>
             <tag name="console.command"/>
         </service>
     </services>

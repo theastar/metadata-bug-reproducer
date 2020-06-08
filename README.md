@@ -13,28 +13,16 @@ bin/console doctr:migrations:migrate
 ```
 
 ```
-bin/console app:test
+bin/console app:test -v
 ```
 
 It produces the following output
 
 ```
-arnoldas@arnoldas:~/dev/metadata-bug-reproducer$ bin/console app:test -vvv
-[info] User Deprecated: Creating Doctrine\ORM\Mapping\UnderscoreNamingStrategy without making it number aware is deprecated and will be removed in Doctrine ORM 3.0.
-
-[debug] Notified event "console.command" to listener "Symfony\Component\HttpKernel\EventListener\DebugHandlersListener::configure".
-
-[debug] SELECT t0.id AS id_1, t0.person_id AS person_id_2 FROM criminal_record t0 WHERE t0.person_id = ? LIMIT 1
-
-[error] Error thrown while running command "app:test -vvv". Message: "An exception occurred while executing 'SELECT t0.id AS id_1, t0.person_id AS person_id_2 FROM criminal_record t0 WHERE t0.person_id = ? LIMIT 1' with params [{}]:
+arnoldas@arnoldas:~/dev/metadata-bug-reproducer$ bin/console app:test -v
+[error] Error thrown while running command "app:test -v". Message: "An exception occurred while executing 'SELECT t0.id AS id_1, t0.person_id AS person_id_2 FROM criminal_record t0 WHERE t0.person_id = ? LIMIT 1' with params [{}]:
 
 Notice: Object of class App\Entity\PersonInmate could not be converted to int"
-
-[debug] Notified event "console.error" to listener "Symfony\Component\Console\EventListener\ErrorListener::onConsoleError".
-
-[debug] Command "app:test -vvv" exited with code "1"
-
-[debug] Notified event "console.terminate" to listener "Symfony\Component\Console\EventListener\ErrorListener::onConsoleTerminate".
 
 
 In DBALException.php line 172:
@@ -89,12 +77,20 @@ app:test [-h|--help] [-q|--quiet] [-v|vv|vvv|--verbose] [-V|--version] [--ansi] 
 
 ## The reason
 
-In `\Doctrine\ORM\Persisters\Entity\BasicEntityPersister::getValues` there is no metadata for entity `PersonInmate`, 
-i.e., the call to `\Doctrine\Common\Persistence\Mapping\ClassMetadataFactory::hasMetadataFor` returns false. Then the
+In `\Doctrine\ORM\Persisters\Entity\BasicEntityPersister::getValues` when there is no metadata for entity `PersonInmate`, 
+i.e., the call to `\Doctrine\Common\Persistence\Mapping\ClassMetadataFactory::hasMetadataFor` returns false, the
 result from `\Doctrine\ORM\Persisters\Entity\BasicEntityPersister::getIndividualValue` is the object itself which later 
 cast to an int.
 
 See ![here](breakpoint-with-context.png)
+
+There is another command `Test2Command` which does not crash when making the same call:
+```
+arnoldas@arnoldas:~/dev/metadata-bug-reproducer$ bin/console app:test2 -v
+null
+```
+The only difference between these commands is that in `Test2Command`, `PersonInmateRepository` is being initialized 
+(constructed) which also creates metadata for `PersonInmate`.
 
 ## Library versions installed
 
