@@ -4,6 +4,7 @@ There is a mapped superclass entity `Person` and its derived entity `PersonInmat
 
 Calling `\Doctrine\ORM\EntityRepository::findOneBy` with `['person' => new PersonInmate()]` results in an exception.
 
+Issue: https://github.com/doctrine/orm/issues/8176
 
 ## Reproducing the issue
 
